@@ -64,3 +64,56 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Project Setup (For All Developers)
+
+After cloning the repository, follow these steps:
+
+1. **Copy the environment file:**
+   - Windows: Copy `.env.example` to `.env` manually or with `copy .env.example .env`
+   - Mac/Linux: `cp .env.example .env`
+
+2. **Set up your environment variables in `.env`:**
+   - Update database credentials (DB_DATABASE, DB_USERNAME, DB_PASSWORD, etc.)
+   - Add Google OAuth credentials:
+     ```
+     GOOGLE_CLIENT_ID=your-google-client-id
+     GOOGLE_CLIENT_SECRET=your-google-client-secret
+     GOOGLE_REDIRECT_URI=http://localhost:8000/auth/callback/google
+     ```
+
+3. **Install dependencies:**
+   ```
+   composer install
+   npm install
+   ```
+
+4. **Generate the application key:**
+   ```
+   php artisan key:generate
+   ```
+
+5. **Run database migrations:**
+   ```
+   php artisan migrate
+   ```
+
+6. **(Optional) Build frontend assets:**
+   ```
+   npm run dev
+   ```
+
+7. **Start the development server:**
+   ```
+   php artisan serve
+   ```
+
+8. **Access the app:**
+   - Visit [http://localhost:8000](http://localhost:8000) in your browser.
+
+**Note:**
+- Never commit your `.env` file or `vendor/` folder to GitHub.
+- Each developer must set up their own `.env` file and credentials.
+- For Google login to work, the redirect URI must match exactly in both `.env` and the Google Cloud Console.
+
+---
