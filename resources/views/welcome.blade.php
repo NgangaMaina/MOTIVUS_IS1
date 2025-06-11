@@ -1,24 +1,61 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="container" style="max-width: 600px; margin: 80px auto;">
-    <div class="card shadow">
-        <div class="card-header text-center bg-primary text-white">
-            <h2>Welcome to MOTIVUS Car Rental</h2>
-        </div>
-        <div class="card-body text-center">
-            <p class="lead">Easily rent a car with us. Sign in or create an account to get started!</p>
-            <div class="d-flex justify-content-center gap-3 mt-4">
-                <a href="{{ route('login') }}" class="btn btn-primary btn-lg">Sign In</a>
-                <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg">Create Account</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOTIVUS - Car Rental Made Easy</title>
+    <link href="{{ asset('css/motivus.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">MOTIVUS</a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="{{ route('login') }}" class="nav-btn">Get Started</a>
             </div>
-            <hr>
-            <div class="mt-3">
-                <a href="{{ url('/auth/redirect/google') }}" class="btn btn-danger btn-lg w-100">
-                    <i class="bi bi-google"></i> Continue with Google
-                </a>
+        </div>
+    </nav>
+
+    <div class="mobile-container">
+        <div class="homepage">
+            <!-- Left Side (Mobile: Top, Desktop: Left) -->
+            <div class="homepage-left">
+                <!-- Logo Section -->
+                <div class="logo-section">
+                    <div class="logo">MOTIVUS</div>
+                    <div class="tagline">Car Rental Made Easy</div>
+                </div>
+
+                <!-- Car Text -->
+                <div class="car-text">
+                    <h2>RENT A CAR EFFORTLESSLY<br>WITH OUR STREAMLINED SERVICES</h2>
+                    
+                </div>
+
+                <!-- CTA Section -->
+                <div class="cta-section">
+                    <a href="{{ route('login') }}" class="get-started-btn">
+                        GET STARTED
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Side (Mobile: Middle, Desktop: Right) -->
+            <div class="homepage-right">
+                <div class="car-section">
+                    <div class="car-image">
+                        <img src="{{ asset('images/hero-car.jpeg') }}"
+                             alt="Luxury Car - Motivus Car Rental"
+                             class="car-photo"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('fallback');">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-@endsection
+</body>
+</html>

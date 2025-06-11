@@ -29,7 +29,12 @@ class EmailVerificationTest extends TestCase
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(config('app.frontend_url').'/dashboard?verified=1');
+        // Test should check for role-based redirect
+        if ($user->isOwner()) {
+            $response->assertRedirect('/owner/dashboard?verified=1');
+        } else {
+            $response->assertRedirect('/vehicles?verified=1');
+        }
     }
 
     public function test_email_is_not_verified_with_invalid_hash(): void
