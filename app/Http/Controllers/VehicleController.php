@@ -95,7 +95,14 @@ class VehicleController extends Controller
             'location' => 'required|string|max:100',
             'price_per_day' => 'required|numeric|min:0|max:999999.99',
             'image_url' => 'nullable|url|max:2000',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
         ]);
+
+        // Handle file upload
+        if ($request->hasFile('image_file')) {
+            $imagePath = $request->file('image_file')->store('images/vehicles', 'public');
+            $validated['image_url'] = '/storage/' . $imagePath;
+        }
 
         $validated['owner_id'] = Auth::id();
         $validated['availability'] = true;
@@ -130,7 +137,14 @@ class VehicleController extends Controller
             'price_per_day' => 'required|numeric|min:0|max:999999.99',
             'availability' => 'boolean',
             'image_url' => 'nullable|url|max:2000',
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
         ]);
+
+        // Handle file upload
+        if ($request->hasFile('image_file')) {
+            $imagePath = $request->file('image_file')->store('images/vehicles', 'public');
+            $validated['image_url'] = '/storage/' . $imagePath;
+        }
 
         $vehicle->update($validated);
 

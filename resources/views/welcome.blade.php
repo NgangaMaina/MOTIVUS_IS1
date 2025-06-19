@@ -48,7 +48,7 @@
             <div class="homepage-right">
                 <div class="car-section">
                     <div class="car-image">
-                        <img src="{{ asset('images/hero-car.jpeg') }}"
+                        <img src="{{ asset('images/car landin.jpeg') }}"
                              alt="Luxury Car - Motivus Car Rental"
                              class="car-photo"
                              onerror="this.style.display='none'; this.parentElement.classList.add('fallback');">

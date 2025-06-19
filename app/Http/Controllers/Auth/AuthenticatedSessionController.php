@@ -32,7 +32,10 @@ class AuthenticatedSessionController extends Controller
 
         // Determine redirect URL based on fresh user role
         $redirectUrl = $this->getRedirectUrlForUser($user);
-
+        // If the user is a renter, always redirect to /vehicles
+        if ($user->role && $user->role->name === 'renter') {
+            return redirect('/vehicles');
+        }
         return redirect($redirectUrl);
     }
 
@@ -53,9 +56,11 @@ class AuthenticatedSessionController extends Controller
                 return '/admin/dashboard';
             case 'owner':
                 return '/owner/dashboard';
+            case 'driver':
+                return '/driver/dashboard';
             case 'renter':
             default:
-                return '/vehicles';
+                return '/user/dashboard';
         }
     }
 

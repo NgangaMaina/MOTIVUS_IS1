@@ -12,15 +12,15 @@
             <div class="auth-card">
                 <div class="auth-header">
                     <div class="auth-logo">MOTIVUS</div>
-                    <h1 class="auth-title">Welcome, {{ auth()->user()->name }}!</h1>
-                    <p class="auth-subtitle">You're logged in as a {{ auth()->user()->role->name }}</p>
+                    <h1 class="auth-title">Welcome, {{ auth()->check() && auth()->user() ? auth()->user()->name : 'Guest' }}!</h1>
+                    <p class="auth-subtitle">You're logged in as a {{ auth()->check() && auth()->user() && auth()->user()->role ? auth()->user()->role->name : 'guest' }}</p>
                 </div>
 
                 <div style="text-align: center; margin: 30px 0;">
                     <p>🎉 Your beautiful mobile-responsive pages are working!</p>
-                    <p>Role: <strong>{{ ucfirst(auth()->user()->role->name) }}</strong></p>
-                    <p>Email: <strong>{{ auth()->user()->email }}</strong></p>
-                    @if(auth()->user()->phone)
+                    <p>Role: <strong>{{ auth()->check() && auth()->user() && auth()->user()->role ? ucfirst(auth()->user()->role->name) : 'Guest' }}</strong></p>
+                    <p>Email: <strong>{{ auth()->check() && auth()->user() ? auth()->user()->email : '' }}</strong></p>
+                    @if(auth()->check() && auth()->user() && auth()->user()->phone)
                         <p>Phone: <strong>{{ auth()->user()->phone }}</strong></p>
                     @endif
                 </div>

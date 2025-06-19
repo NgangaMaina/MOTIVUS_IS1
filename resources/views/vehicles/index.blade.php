@@ -144,6 +144,51 @@
             margin-top: 40px;
         }
         
+        .user-profile-section {
+            max-width: 600px;
+            margin: 40px auto 0;
+            background: #f8fafc;
+            border-radius: 18px;
+            box-shadow: 0 4px 18px rgba(37,99,235,0.07);
+            padding: 32px 28px;
+        }
+        
+        .user-profile-section h2 {
+            color: #2563eb;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+        
+        .user-profile-section .form-group {
+            margin-bottom: 12px;
+        }
+        
+        .user-profile-section .form-group label {
+            font-weight: 600;
+            color: #2563eb;
+        }
+        
+        .user-profile-section .form-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1.5px solid #c7d2fe;
+        }
+        
+        .user-profile-section button[type="submit"] {
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 32px;
+            font-size: 1.1rem;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
         @media (max-width: 768px) {
             .vehicle-grid {
                 grid-template-columns: 1fr;
@@ -278,6 +323,37 @@
                     <p>Try adjusting your search filters or check back later for new listings.</p>
                 </div>
             @endif
+
+            <!-- User Profile Section -->
+            <div class="user-profile-section" style="max-width: 600px; margin: 40px auto 0; background: #f8fafc; border-radius: 18px; box-shadow: 0 4px 18px rgba(37,99,235,0.07); padding: 32px 28px;">
+                <h2 style="color: #2563eb; font-size: 1.6rem; font-weight: 700; margin-bottom: 18px;">My Profile</h2>
+                <div style="margin-bottom: 18px;">
+                    <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Name:</b> {{ auth()->user()->name }}</div>
+                    <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Email:</b> {{ auth()->user()->email }}</div>
+                    <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Phone:</b> {{ auth()->user()->phone ?? '-' }}</div>
+                </div>
+                <form method="POST" action="{{ route('user.profile.update') }}" style="margin-top: 10px;" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-weight: 600; color: #2563eb;">Name</label>
+                        <input type="text" name="name" value="{{ auth()->user()->name }}" class="form-input" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #c7d2fe;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-weight: 600; color: #2563eb;">Email</label>
+                        <input type="email" name="email" value="{{ auth()->user()->email }}" class="form-input" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #c7d2fe;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-weight: 600; color: #2563eb;">Phone</label>
+                        <input type="text" name="phone" value="{{ auth()->user()->phone }}" class="form-input" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #c7d2fe;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-weight: 600; color: #2563eb;">Password <span style="font-weight:400; color:#64748b;">(leave blank to keep current)</span></label>
+                        <input type="password" name="password" class="form-input" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #c7d2fe;">
+                    </div>
+                    <button type="submit" style="background: linear-gradient(90deg, #2563eb, #60a5fa); color: #fff; font-weight: 600; border: none; border-radius: 8px; padding: 12px 32px; font-size: 1.1rem; margin-top: 8px; cursor: pointer; transition: background 0.2s;">Update Profile</button>
+                </form>
+            </div>
         </div>
     </div>
 </body>

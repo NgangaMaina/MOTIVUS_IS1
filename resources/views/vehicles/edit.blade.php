@@ -298,7 +298,7 @@
             @endif
 
             <!-- Vehicle Form -->
-            <form method="POST" action="{{ isset($vehicle) ? route('owner.vehicles.update', $vehicle) : route('owner.vehicles.store') }}" class="form-card">
+            <form method="POST" enctype="multipart/form-data" action="{{ isset($vehicle) ? route('owner.vehicles.update', $vehicle) : route('owner.vehicles.store') }}" class="form-card">
                 @csrf
                 @if(isset($vehicle))
                     @method('PATCH')
@@ -376,15 +376,12 @@
                         <label for="image_url" class="form-label">Image URL</label>
                         <input type="url" id="image_url" name="image_url" class="form-input" 
                                value="{{ old('image_url', $vehicle->image_url ?? '') }}" placeholder="https://example.com/your-car-photo.jpg">
-                        <div class="form-help">Add a photo URL to attract more renters (optional)</div>
-                        
-                        <div class="image-preview" id="imagePreview">
-                            <div class="preview-content">
-                                <div class="preview-icon">📷</div>
-                                <div>Image preview will appear here</div>
-                                <div style="font-size: 0.8rem; margin-top: 5px;">Enter an image URL above</div>
-                            </div>
-                        </div>
+                        <div class="form-help">Add a photo URL (optional)</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="image_file" class="form-label">Or Upload Image</label>
+                        <input type="file" id="image_file" name="image_file" class="form-input" accept="image/*">
+                        <div class="form-help">Upload a photo from your computer (JPG, PNG, etc.)</div>
                     </div>
                 </div>
 

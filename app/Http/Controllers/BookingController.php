@@ -177,4 +177,43 @@ class BookingController extends Controller
 
         return view('owner.bookings.index', compact('bookings'));
     }
+
+    /**
+     * Assign a driver to a booking (owners only).
+     */
+    public function assignDriverForm(Booking $booking)
+    {
+        $this->authorize('manage', $booking);
+        // Only allow for accepted bookings
+        if ($booking->status !== 'accepted') {
+            return back()->withErrors(['error' => 'You can only assign a driver to accepted bookings.']);
+        }
+        // Get all drivers
+        $drivers = \App\Models\User::whereHas('role', function($q) {
+            $q->where('name', 'driver');
+        })->get();
+        return view('owner.bookings.assign_driver', compact('booking', 'drivers'));
+    }
+
+    public function assignDriver(Request $request, Booking $booking)
+    {
+        $this->authorize('manage', $booking);
+        $request->validate([
+            'driver_id' => 'required|exists:users,id',
+        ]);
+        // Only allow for accepted bookings
+        if ($booking->status !== 'accepted') {
+            return back()->withErrors(['error' => 'You can only assign a driver to accepted bookings.']);
+        }
+        // Create or update delivery task
+        $deliveryTask = $booking->deliveryTask;
+        if (!$deliveryTask) {
+            $deliveryTask = new \App\Models\DeliveryTask();
+            $deliveryTask->booking_id = $booking->id;
+        }
+        $deliveryTask->driver_id = $request->driver_id;
+        $deliveryTask->status = 'assigned';
+        $deliveryTask->save();
+        return redirect()->route('owner.bookings.index')->with('success', 'Driver assigned successfully!');
+    }
 }

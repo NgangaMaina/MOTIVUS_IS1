@@ -71,9 +71,11 @@ class GoogleController extends Controller
                 return '/admin/dashboard';
             case 'owner':
                 return '/owner/dashboard';
+            case 'driver':
+                return '/driver/dashboard';
             case 'renter':
             default:
-                return '/vehicles';
+                return '/user/dashboard';
         }
     }
 }

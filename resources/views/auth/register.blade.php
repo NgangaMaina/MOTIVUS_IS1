@@ -75,6 +75,10 @@
                                 <input type="radio" id="owner" name="role" value="owner" {{ old('role') == 'owner' ? 'checked' : '' }}>
                                 <label for="owner">List My Car</label>
                             </div>
+                            <div class="role-option">
+                                <input type="radio" id="driver" name="role" value="driver" {{ old('role') == 'driver' ? 'checked' : '' }}>
+                                <label for="driver">Deliver Cars (Deliverer)</label>
+                            </div>
                         </div>
                     </div>
 

@@ -237,12 +237,12 @@ class AdminController extends Controller
         // Revenue by period
         $revenueData = $this->getRevenueByPeriod($period);
         
-        // Top earning vehicles
-        $topEarningVehicles = Vehicle::select('vehicles.*')
+        // Top earning vehicles (fix for strict SQL mode)
+        $topEarningVehicles = Vehicle::select('vehicles.id', 'vehicles.owner_id', 'vehicles.make', 'vehicles.model', 'vehicles.year', 'vehicles.location', 'vehicles.price_per_day', 'vehicles.availability', 'vehicles.image_url')
             ->join('bookings', 'vehicles.id', '=', 'bookings.vehicle_id')
             ->join('payments', 'bookings.id', '=', 'payments.booking_id')
             ->where('payments.status', 'success')
-            ->groupBy('vehicles.id')
+            ->groupBy('vehicles.id', 'vehicles.owner_id', 'vehicles.make', 'vehicles.model', 'vehicles.year', 'vehicles.location', 'vehicles.price_per_day', 'vehicles.availability', 'vehicles.image_url')
             ->orderByRaw('SUM(payments.amount) DESC')
             ->with(['owner', 'bookings.payment'])
             ->limit(10)

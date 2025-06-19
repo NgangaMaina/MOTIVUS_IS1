@@ -456,6 +456,13 @@
                                         </button>
                                     </form>
                                 @elseif($booking->status === 'accepted')
+                                    @if(!$booking->deliveryTask)
+                                        <a href="{{ route('owner.bookings.assignDriverForm', $booking) }}" class="btn btn-accept">
+                                            Assign Driver
+                                        </a>
+                                    @else
+                                        <span class="btn btn-secondary" style="background:#e0e7ef;color:#333;cursor:default;">Driver Assigned</span>
+                                    @endif
                                     <form method="POST" action="{{ route('owner.bookings.complete', $booking) }}" style="display: inline;">
                                         @csrf
                                         @method('PATCH')

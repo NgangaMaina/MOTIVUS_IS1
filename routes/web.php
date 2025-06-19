@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\DriverDashboardController;
 
 // Only define GET routes for login/register here, not in both files
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -91,7 +92,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/bookings/{booking}/accept', [BookingController::class, 'accept'])->name('bookings.accept');
         Route::patch('/bookings/{booking}/reject', [BookingController::class, 'reject'])->name('bookings.reject');
         Route::patch('/bookings/{booking}/complete', [BookingController::class, 'complete'])->name('bookings.complete');
+        Route::get('/bookings/{booking}/assign-driver', [BookingController::class, 'assignDriverForm'])->name('bookings.assignDriverForm');
+        Route::post('/bookings/{booking}/assign-driver', [BookingController::class, 'assignDriver'])->name('bookings.assignDriver');
     });
+
+    // User dashboard route (renter)
+    Route::get('/user/dashboard', [App\Http\Controllers\UserDashboardController::class, 'index'])
+        ->middleware(['auth', 'verified'])
+        ->name('user.dashboard');
+
+    // Driver dashboard and profile routes
+    Route::middleware(['auth', 'verified'])->prefix('driver')->name('driver.')->group(function () {
+        Route::get('/dashboard', [DriverDashboardController::class, 'index'])->name('dashboard');
+        Route::put('/profile', [DriverDashboardController::class, 'updateProfile'])->name('profile.update');
+        Route::post('/delivery/{id}/delivered', [DriverDashboardController::class, 'markAsDelivered'])->name('delivery.delivered');
+        Route::post('/delivery/{id}/deny', [DriverDashboardController::class, 'denyTask'])->name('delivery.deny');
+        Route::post('/delivery/{id}/accept', [DriverDashboardController::class, 'acceptTask'])->name('delivery.accept');
+    });
+
+    // User profile update route
+    Route::middleware(['auth', 'verified'])->put('/user/profile', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'updateProfile'])->name('user.profile.update');
 });
 
 require __DIR__.'/auth.php';
