@@ -47,13 +47,6 @@
             <!-- Right Side (Mobile: Middle, Desktop: Right) -->
             <div class="homepage-right">
                 <div class="car-section">
-<<<<<<< HEAD
-                    <div class="car-image">
-                        <img src="{{ asset('images/car landin.jpeg') }}"
-                             alt="Luxury Car - Motivus Car Rental"
-                             class="car-photo"
-                             onerror="this.style.display='none'; this.parentElement.classList.add('fallback');">
-=======
                     <!-- Premium Car Slider -->
                     <div class="premium-car-slider">
                         <div class="slider-wrapper">
@@ -144,7 +137,6 @@
                                 <button class="indicator" data-slide="4" aria-label="Premium Choice"></button>
                             </div>
                         </div>
->>>>>>> main
                     </div>
                 </div>
             </div>

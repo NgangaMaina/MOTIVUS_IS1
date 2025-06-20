@@ -30,6 +30,8 @@ Route::get('/dashboard', function () {
                 return redirect('/admin/dashboard');
             case 'owner':
                 return redirect('/owner/dashboard');
+            case 'driver':
+                return redirect('/driver/dashboard');
             case 'renter':
             default:
                 return redirect('/vehicles');
@@ -37,6 +39,7 @@ Route::get('/dashboard', function () {
     }
     return redirect('/login');
 })->middleware(['auth'])->name('dashboard');
+
 
 Route::get('/owner/dashboard', function () {
     return view('owner.dashboard');
