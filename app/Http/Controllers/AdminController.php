@@ -198,6 +198,8 @@ class AdminController extends Controller
      */
     public function userManagement(Request $request)
     {
+        $this->checkAdminAccess();
+
         $query = User::with('role');
         
         // Filter by role
@@ -227,6 +229,8 @@ class AdminController extends Controller
      */
     public function financialAnalytics(Request $request)
     {
+        $this->checkAdminAccess();
+
         $period = $request->get('period', 'month'); // month, quarter, year
         
         // Revenue analytics
@@ -237,14 +241,14 @@ class AdminController extends Controller
         // Revenue by period
         $revenueData = $this->getRevenueByPeriod($period);
         
-        // Top earning vehicles (fix for strict SQL mode)
-        $topEarningVehicles = Vehicle::select('vehicles.id', 'vehicles.owner_id', 'vehicles.make', 'vehicles.model', 'vehicles.year', 'vehicles.location', 'vehicles.price_per_day', 'vehicles.availability', 'vehicles.image_url')
+        // Top earning vehicles
+        $topEarningVehicles = Vehicle::select('vehicles.*', DB::raw('SUM(payments.amount) as total_earnings'))
             ->join('bookings', 'vehicles.id', '=', 'bookings.vehicle_id')
             ->join('payments', 'bookings.id', '=', 'payments.booking_id')
             ->where('payments.status', 'success')
-            ->groupBy('vehicles.id', 'vehicles.owner_id', 'vehicles.make', 'vehicles.model', 'vehicles.year', 'vehicles.location', 'vehicles.price_per_day', 'vehicles.availability', 'vehicles.image_url')
+            ->groupBy('vehicles.id', 'vehicles.owner_id', 'vehicles.make', 'vehicles.model', 'vehicles.year', 'vehicles.location', 'vehicles.price_per_day', 'vehicles.availability', 'vehicles.image_url', 'vehicles.created_at', 'vehicles.updated_at')
             ->orderByRaw('SUM(payments.amount) DESC')
-            ->with(['owner', 'bookings.payment'])
+            ->with(['owner'])
             ->limit(10)
             ->get();
             
@@ -264,6 +268,8 @@ class AdminController extends Controller
      */
     public function systemActivity()
     {
+        $this->checkAdminAccess();
+
         // Recent user registrations
         $recentUsers = User::with('role')
             ->orderBy('created_at', 'desc')

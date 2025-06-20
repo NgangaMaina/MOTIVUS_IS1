@@ -39,4 +39,17 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
+
+    'mpesa' => [
+        'consumer_key' => env('MPESA_CONSUMER_KEY', ''),
+        'consumer_secret' => env('MPESA_CONSUMER_SECRET', ''),
+        'passkey' => env('MPESA_PASSKEY', ''),
+        'shortcode' => env('MPESA_SHORTCODE', ''),
+        'env' => env('MPESA_ENV', 'sandbox'),
+        'callback_url' => env('MPESA_CALLBACK_URL', ''),
+        'use_fake_payments' => env('USE_FAKE_PAYMENTS', false),
+        'fake_payment_delay' => env('FAKE_PAYMENT_DELAY', 3),
+    ],
 ];
+
+

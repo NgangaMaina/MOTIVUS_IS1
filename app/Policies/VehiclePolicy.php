@@ -54,4 +54,18 @@ class VehiclePolicy
     {
         return $user->isOwner();
     }
+
+    /**
+     * Determine whether the user can manage the vehicle (approve/suspend).
+     */
+    public function manage(User $user, Vehicle $vehicle): bool
+    {
+        // Admins can manage any vehicle
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        // Owners can manage their own vehicles
+        return $user->isOwner() && $user->id === $vehicle->owner_id;
+    }
 }

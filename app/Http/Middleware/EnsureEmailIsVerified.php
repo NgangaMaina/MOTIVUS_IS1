@@ -16,10 +16,24 @@ class EnsureEmailIsVerified
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user() ||
-            ($request->user() instanceof MustVerifyEmail &&
-            ! $request->user()->hasVerifiedEmail())) {
-            return response()->json(['message' => 'Your email address is not verified.'], 409);
+        $user = $request->user();
+
+        // Skip verification for admin users
+        if ($user && $user->isAdmin()) {
+            return $next($request);
+        }
+
+        if (! $user ||
+            ($user instanceof MustVerifyEmail &&
+            ! $user->hasVerifiedEmail())) {
+
+            // For AJAX requests, return JSON response
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Your email address is not verified.'], 409);
+            }
+
+            // For web requests, redirect to verification notice
+            return redirect()->route('verification.notice');
         }
 
         return $next($request);

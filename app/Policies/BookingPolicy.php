@@ -54,6 +54,12 @@ class BookingPolicy
      */
     public function manage(User $user, Booking $booking): bool
     {
+        // Admins can manage any booking
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        // Owners can manage bookings for their vehicles
         return $user->isOwner() && $user->id === $booking->vehicle->owner_id;
     }
 }
