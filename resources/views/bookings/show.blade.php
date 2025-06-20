@@ -437,9 +437,62 @@
                             View All Bookings
                         </a>
                     </div>
+
+                    @if($booking->status === 'pending' && (!$booking->payment || $booking->payment->status !== 'success'))
+                        <div class="payment-section">
+                            <h3>Complete Payment</h3>
+                            <p>Total Amount: KSh {{ number_format($booking->total_amount, 2) }}</p>
+                            
+                            <form action="{{ route('payments.initiate', $booking) }}" method="POST" class="payment-form">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="phone_number">M-PESA Phone Number (Format: 254XXXXXXXXX)</label>
+                                    <input type="text" name="phone_number" id="phone_number" class="form-control" 
+                                        placeholder="254712345678" value="{{ old('phone_number', auth()->user()->phone) }}" required>
+                                    @error('phone_number')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Pay with M-PESA</button>
+                            </form>
+                        </div>
+                    @endif
+
+                    @if($booking->payment && $booking->payment->status === 'pending')
+                        <div class="payment-status-section">
+                            <div class="alert alert-info">
+                                <p>Payment is being processed. Please complete the transaction on your phone.</p>
+                                <div id="payment-status-loading">Checking payment status...</div>
+                            </div>
+                        </div>
+
+                        <script>
+                            // Poll for payment status
+                            function checkPaymentStatus() {
+                                fetch('{{ route("payments.status", $booking) }}')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.status === 'success') {
+                                            window.location.reload();
+                                        } else if (data.status === 'failed') {
+                                            document.getElementById('payment-status-loading').innerHTML = 
+                                                '<span class="text-danger">Payment failed. Please try again.</span>';
+                                        } else {
+                                            // Continue polling
+                                            setTimeout(checkPaymentStatus, 5000);
+                                        }
+                                    });
+                            }
+                            
+                            // Start polling
+                            checkPaymentStatus();
+                        </script>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </body>
 </html>
+

@@ -113,6 +113,22 @@ class Booking extends Model
     }
 
     /**
+     * Scope a query to only include cancelled bookings.
+     */
+    public function scopeCancelled($query)
+    {
+        return $query->where('status', 'cancelled');
+    }
+
+    /**
+     * Scope a query to only include rejected bookings.
+     */
+    public function scopeRejected($query)
+    {
+        return $query->where('status', 'rejected');
+    }
+
+    /**
      * Get the duration of the booking in days.
      */
     public function getDurationAttribute(): int

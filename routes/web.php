@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\PaymentController;
 
 // Only define GET routes for login/register here, not in both files
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -94,4 +95,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
+// Payment routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/bookings/{booking}/payment', [PaymentController::class, 'showPaymentForm'])->name('payments.form');
+    Route::post('/bookings/{booking}/pay', [PaymentController::class, 'initiatePayment'])->name('payments.initiate');
+    Route::get('/bookings/{booking}/payment-status', [PaymentController::class, 'checkStatus'])->name('payments.status');
+    
+    // Fake payment simulation route (only available in non-production)
+    if (app()->environment('local', 'development', 'testing')) {
+        Route::post('/bookings/{booking}/simulate-payment', [PaymentController::class, 'simulateSuccess'])->name('payments.simulate');
+    }
+});
+
 require __DIR__.'/auth.php';
+
+
