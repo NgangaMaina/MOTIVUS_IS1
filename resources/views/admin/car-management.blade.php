@@ -392,6 +392,43 @@
                 </form>
             </div>
 
+            <!-- Add System-Owned Car Form -->
+            <div class="filters-card" style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 18px; color: #28a745;">Add System-Owned Car</h3>
+                <form method="POST" action="{{ route('admin.add-system-car') }}" enctype="multipart/form-data" style="display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-end;">
+                    @csrf
+                    <div class="form-group" style="flex:1; min-width: 180px;">
+                        <label class="form-label">Make</label>
+                        <input type="text" name="make" class="form-input" required>
+                    </div>
+                    <div class="form-group" style="flex:1; min-width: 180px;">
+                        <label class="form-label">Model</label>
+                        <input type="text" name="model" class="form-input" required>
+                    </div>
+                    <div class="form-group" style="flex:1; min-width: 120px;">
+                        <label class="form-label">Year</label>
+                        <input type="number" name="year" class="form-input" min="1980" max="{{ date('Y')+1 }}">
+                    </div>
+                    <div class="form-group" style="flex:1; min-width: 180px;">
+                        <label class="form-label">Location</label>
+                        <input type="text" name="location" class="form-input" required>
+                    </div>
+                    <div class="form-group" style="flex:1; min-width: 120px;">
+                        <label class="form-label">Price/Day (KSh)</label>
+                        <input type="number" name="price_per_day" class="form-input" min="0" required>
+                    </div>
+                    <div class="form-group" style="flex:2; min-width: 220px;">
+                        <label class="form-label">Image (URL or Upload)</label>
+                        <input type="text" name="image_url" class="form-input" placeholder="Paste image URL or leave blank">
+                        <input type="file" name="image_file" class="form-input" style="margin-top: 6px;">
+                    </div>
+                    <div class="form-group" style="min-width: 120px;">
+                        <button type="submit" class="btn btn-approve" style="width:100%;">Add Car</button>
+                    </div>
+                </form>
+            </div>
+            <!-- End Add System-Owned Car Form -->
+
             <!-- Vehicles -->
             @if($vehicles->count() > 0)
                 <div class="vehicles-grid">

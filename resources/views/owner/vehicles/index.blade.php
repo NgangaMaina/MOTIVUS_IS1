@@ -229,22 +229,13 @@
         <div class="nav-container">
             <a href="/" class="nav-logo">MOTIVUS</a>
             <div class="nav-links">
-                <a href="{{ route('vehicles.index') }}" class="nav-link">Browse Cars</a>
-                @auth
-                    @if(auth()->user()->isRenter())
-                        <a href="{{ route('bookings.index') }}" class="nav-link">My Bookings</a>
-                    @endif
-                    @if(auth()->user()->isOwner())
-                        <a href="{{ route('owner.vehicles.index') }}" class="nav-link active">My Vehicles</a>
-                        <a href="{{ route('owner.bookings.index') }}" class="nav-link">Booking Requests</a>
-                    @endif
-                    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                        @csrf
-                        <button type="submit" class="nav-link" style="background: none; border: none; color: white;">Logout</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="nav-btn">Sign In</a>
-                @endauth
+                <a href="{{ route('owner.dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="{{ route('owner.vehicles.index') }}" class="nav-link active">My Vehicles</a>
+                <a href="{{ route('owner.bookings.index') }}" class="nav-link">Manage Bookings</a>
+                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="nav-link" style="background: none; border: none; color: white;">Logout</button>
+                </form>
             </div>
         </div>
     </nav>

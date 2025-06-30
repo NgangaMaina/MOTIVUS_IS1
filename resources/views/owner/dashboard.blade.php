@@ -169,6 +169,64 @@
             color: #333;
             font-weight: 600;
         }
+
+        .user-profile-section {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            background: #e6f7fa;
+            border-radius: 18px;
+            box-shadow: 0 4px 18px rgba(0, 212, 255, 0.07);
+            padding: 32px 28px;
+            margin-top: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .user-profile-section h2 {
+            color: #0099cc;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .user-profile-section h4 {
+            color: #0099cc;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .user-profile-section .form-group {
+            margin-bottom: 12px;
+        }
+
+        .user-profile-section label {
+            font-weight: 600;
+            color: #0099cc;
+        }
+
+        .user-profile-section .form-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1.5px solid #00d4ff;
+        }
+
+        .user-profile-section button {
+            background: linear-gradient(90deg, #00d4ff, #0099cc);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 32px;
+            font-size: 1.1rem;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
     </style>
 </head>
 <body>
@@ -177,22 +235,13 @@
         <div class="nav-container">
             <a href="/" class="nav-logo">MOTIVUS</a>
             <div class="nav-links">
-                <a href="{{ route('vehicles.index') }}" class="nav-link">Browse Cars</a>
-                @auth
-                    @if(auth()->user()->isRenter())
-                        <a href="{{ route('bookings.index') }}" class="nav-link">My Bookings</a>
-                    @endif
-                    @if(auth()->user()->isOwner())
-                        <a href="{{ route('owner.vehicles.index') }}" class="nav-link">My Vehicles</a>
-                        <a href="{{ route('owner.bookings.index') }}" class="nav-link">Booking Requests</a>
-                    @endif
-                    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                        @csrf
-                        <button type="submit" class="nav-link" style="background: none; border: none; color: white;">Logout</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="nav-btn">Sign In</a>
-                @endauth
+                <a href="{{ route('owner.dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="{{ route('owner.vehicles.index') }}" class="nav-link">My Vehicles</a>
+                <a href="{{ route('owner.bookings.index') }}" class="nav-link">Manage Bookings</a>
+                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="nav-link" style="background: none; border: none; color: white;">Logout</button>
+                </form>
             </div>
         </div>
     </nav>
@@ -281,6 +330,41 @@
                     <span class="info-value">{{ auth()->user()->created_at->format('M d, Y') }}</span>
                 </div>
             </div>
+            <!-- Owner Profile Section -->
+            @if(auth()->user()->isOwner())
+            <div class="user-profile-section" style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; background: #e6f7fa; border-radius: 18px; box-shadow: 0 4px 18px rgba(0,212,255,0.07); padding: 32px 28px; margin-top: 40px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <div style="min-width: 220px; flex: 1;">
+                    <h2 style="color: #0099cc; font-size: 1.6rem; font-weight: 700; margin-bottom: 18px;">Profile</h2>
+                    <div style="margin-bottom: 18px;">
+                        <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Name:</b> {{ auth()->user()->name }}</div>
+                        <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Email:</b> {{ auth()->user()->email }}</div>
+                        <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Phone:</b> {{ auth()->user()->phone ?? '-' }}</div>
+                    </div>
+                </div>
+                <form method="POST" action="{{ route('owner.profile.update') }}" enctype="multipart/form-data" style="flex: 1; min-width: 260px; max-width: 340px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,212,255,0.05); padding: 24px 20px;">
+                    @csrf
+                    @method('PUT')
+                    <h4 style="color: #0099cc; font-size: 1.1rem; font-weight: 600; margin-bottom: 16px;">Update Info</h4>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-weight: 600; color: #0099cc;">Name</label>
+                        <input type="text" name="name" value="{{ auth()->user()->name }}" class="form-input" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #00d4ff;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-weight: 600; color: #0099cc;">Email</label>
+                        <input type="email" name="email" value="{{ auth()->user()->email }}" class="form-input" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #00d4ff;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-weight: 600; color: #0099cc;">Phone</label>
+                        <input type="text" name="phone" value="{{ auth()->user()->phone }}" class="form-input" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #00d4ff;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-weight: 600; color: #0099cc;">Password <span style="font-weight:400; color:#64748b;">(leave blank to keep current)</span></label>
+                        <input type="password" name="password" class="form-input" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #00d4ff;">
+                    </div>
+                    <button type="submit" style="background: linear-gradient(90deg, #00d4ff, #0099cc); color: #fff; font-weight: 600; border: none; border-radius: 8px; padding: 12px 32px; font-size: 1.1rem; margin-top: 8px; cursor: pointer; transition: background 0.2s;">Update Profile</button>
+                </form>
+            </div>
+            @endif
         </div>
     </div>
 </body>

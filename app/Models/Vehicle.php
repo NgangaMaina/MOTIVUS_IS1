@@ -25,6 +25,7 @@ class Vehicle extends Model
         'price_per_day',
         'availability',
         'image_url',
+        'is_system_owned',
     ];
 
     /**

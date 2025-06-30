@@ -145,12 +145,18 @@
         }
         
         .user-profile-section {
-            max-width: 600px;
-            margin: 40px auto 0;
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            flex-wrap: wrap;
             background: #f8fafc;
             border-radius: 18px;
             box-shadow: 0 4px 18px rgba(37,99,235,0.07);
             padding: 32px 28px;
+            margin-top: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .user-profile-section h2 {
@@ -325,16 +331,19 @@
             @endif
 
             <!-- User Profile Section -->
-            <div class="user-profile-section" style="max-width: 600px; margin: 40px auto 0; background: #f8fafc; border-radius: 18px; box-shadow: 0 4px 18px rgba(37,99,235,0.07); padding: 32px 28px;">
-                <h2 style="color: #2563eb; font-size: 1.6rem; font-weight: 700; margin-bottom: 18px;">My Profile</h2>
-                <div style="margin-bottom: 18px;">
-                    <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Name:</b> {{ auth()->user()->name }}</div>
-                    <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Email:</b> {{ auth()->user()->email }}</div>
-                    <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Phone:</b> {{ auth()->user()->phone ?? '-' }}</div>
+            <div class="user-profile-section" style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; background: #f8fafc; border-radius: 18px; box-shadow: 0 4px 18px rgba(37,99,235,0.07); padding: 32px 28px; margin-top: 40px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <div style="min-width: 220px; flex: 1;">
+                    <h2 style="color: #2563eb; font-size: 1.6rem; font-weight: 700; margin-bottom: 18px;">Profile</h2>
+                    <div style="margin-bottom: 18px;">
+                        <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Name:</b> {{ auth()->user()->name }}</div>
+                        <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Email:</b> {{ auth()->user()->email }}</div>
+                        <div style="font-size: 1.1rem; margin-bottom: 6px;"><b>Phone:</b> {{ auth()->user()->phone ?? '-' }}</div>
+                    </div>
                 </div>
-                <form method="POST" action="{{ route('user.profile.update') }}" style="margin-top: 10px;" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('user.profile.update') }}" enctype="multipart/form-data" style="flex: 1; min-width: 260px; max-width: 340px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(37,99,235,0.05); padding: 24px 20px;">
                     @csrf
                     @method('PUT')
+                    <h4 style="color: #2563eb; font-size: 1.1rem; font-weight: 600; margin-bottom: 16px;">Update Info</h4>
                     <div class="form-group" style="margin-bottom: 12px;">
                         <label style="font-weight: 600; color: #2563eb;">Name</label>
                         <input type="text" name="name" value="{{ auth()->user()->name }}" class="form-input" style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #c7d2fe;">

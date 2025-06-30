@@ -420,82 +420,6 @@
                                 </div>
                             </div>
 
-                            <!-- Request Details -->
-                            <div class="request-details">
-                                <div class="detail-item">
-                                    <div class="detail-label">Pick-up Date</div>
-                                    <div class="detail-value">{{ $booking->start_date->format('M d, Y') }}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Return Date</div>
-                                    <div class="detail-value">{{ $booking->end_date->format('M d, Y') }}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Duration</div>
-                                    <div class="detail-value">{{ $booking->duration }} {{ $booking->duration == 1 ? 'day' : 'days' }}</div>
-                                </div>
-                                <div class="detail-item">
-                                    <div class="detail-label">Total Amount</div>
-                                    <div class="detail-value total-amount">KSh {{ number_format($booking->total_amount) }}</div>
-                                </div>
-                            </div>
-
-                            <!-- Customer Information -->
-                            <div class="customer-info">
-                                <h4>Customer Details</h4>
-                                <div class="contact-item">
-                                    <span>👤</span>
-                                    <span><strong>{{ $booking->renter->name }}</strong></span>
-                                </div>
-                                <div class="contact-item">
-                                    <span>✉️</span>
-                                    <span>{{ $booking->renter->email }}</span>
-                                </div>
-                                @if($booking->renter->phone)
-                                    <div class="contact-item">
-                                        <span>📞</span>
-                                        <span>{{ $booking->renter->phone }}</span>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <!-- Vehicle Owner Information -->
-                            <div class="customer-info">
-                                <h4>Vehicle Owner</h4>
-                                <div class="contact-item">
-                                    <span>👤</span>
-                                    <span><strong>{{ $booking->vehicle->owner->name }}</strong></span>
-                                </div>
-                                <div class="contact-item">
-                                    <span>✉️</span>
-                                    <span>{{ $booking->vehicle->owner->email }}</span>
-                                </div>
-                                @if($booking->vehicle->owner->phone)
-                                    <div class="contact-item">
-                                        <span>📞</span>
-                                        <span>{{ $booking->vehicle->owner->phone }}</span>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <!-- Payment Information -->
-                            @if($booking->payment)
-                                <div class="customer-info">
-                                    <h4>Payment Status</h4>
-                                    <div class="contact-item">
-                                        <span>💳</span>
-                                        <span><strong>{{ ucfirst($booking->payment->status) }}</strong></span>
-                                    </div>
-                                    @if($booking->payment->transaction_code)
-                                        <div class="contact-item">
-                                            <span>🔢</span>
-                                            <span>{{ $booking->payment->transaction_code }}</span>
-                                        </div>
-                                    @endif
-                                </div>
-                            @endif
-
-                            <!-- Action Buttons -->
                             <div class="action-buttons">
                                 @if($booking->status === 'pending')
                                     <form method="POST" action="{{ route('admin.approve-rental', $booking) }}" style="display: inline;">
@@ -513,10 +437,83 @@
                                         </button>
                                     </form>
                                 @endif
-                                
-                                <a href="{{ route('bookings.show', $booking) }}" class="btn btn-view">
-                                    View Details
-                                </a>
+                            </div>
+                            <!-- Request Details (always visible) -->
+                            <div style="margin-top:20px;">
+                                <!-- Request Details -->
+                                <div class="request-details">
+                                    <div class="detail-item">
+                                        <div class="detail-label">Pick-up Date</div>
+                                        <div class="detail-value">{{ $booking->start_date->format('M d, Y') }}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Return Date</div>
+                                        <div class="detail-value">{{ $booking->end_date->format('M d, Y') }}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Duration</div>
+                                        <div class="detail-value">{{ $booking->duration }} {{ $booking->duration == 1 ? 'day' : 'days' }}</div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-label">Total Amount</div>
+                                        <div class="detail-value total-amount">KSh {{ number_format($booking->total_amount) }}</div>
+                                    </div>
+                                </div>
+
+                                <!-- Customer Information -->
+                                <div class="customer-info">
+                                    <h4>Customer Details</h4>
+                                    <div class="contact-item">
+                                        <span>👤</span>
+                                        <span><strong>{{ $booking->renter->name }}</strong></span>
+                                    </div>
+                                    <div class="contact-item">
+                                        <span>✉️</span>
+                                        <span>{{ $booking->renter->email }}</span>
+                                    </div>
+                                    @if($booking->renter->phone)
+                                        <div class="contact-item">
+                                            <span>📞</span>
+                                            <span>{{ $booking->renter->phone }}</span>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- Vehicle Owner Information -->
+                                <div class="customer-info">
+                                    <h4>Vehicle Owner</h4>
+                                    <div class="contact-item">
+                                        <span>👤</span>
+                                        <span><strong>{{ $booking->vehicle->owner->name }}</strong></span>
+                                    </div>
+                                    <div class="contact-item">
+                                        <span>✉️</span>
+                                        <span>{{ $booking->vehicle->owner->email }}</span>
+                                    </div>
+                                    @if($booking->vehicle->owner->phone)
+                                        <div class="contact-item">
+                                            <span>📞</span>
+                                            <span>{{ $booking->vehicle->owner->phone }}</span>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- Payment Information -->
+                                @if($booking->payment)
+                                    <div class="customer-info">
+                                        <h4>Payment Status</h4>
+                                        <div class="contact-item">
+                                            <span>💳</span>
+                                            <span><strong>{{ ucfirst($booking->payment->status) }}</strong></span>
+                                        </div>
+                                        @if($booking->payment->transaction_code)
+                                            <div class="contact-item">
+                                                <span>🔢</span>
+                                                <span>{{ $booking->payment->transaction_code }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     @endforeach

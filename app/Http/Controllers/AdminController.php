@@ -246,7 +246,20 @@ class AdminController extends Controller
             ->join('bookings', 'vehicles.id', '=', 'bookings.vehicle_id')
             ->join('payments', 'bookings.id', '=', 'payments.booking_id')
             ->where('payments.status', 'success')
-            ->groupBy('vehicles.id', 'vehicles.owner_id', 'vehicles.make', 'vehicles.model', 'vehicles.year', 'vehicles.location', 'vehicles.price_per_day', 'vehicles.availability', 'vehicles.image_url', 'vehicles.created_at', 'vehicles.updated_at')
+            ->groupBy(
+                'vehicles.id',
+                'vehicles.owner_id',
+                'vehicles.make',
+                'vehicles.model',
+                'vehicles.year',
+                'vehicles.location',
+                'vehicles.price_per_day',
+                'vehicles.availability',
+                'vehicles.image_url',
+                'vehicles.created_at',
+                'vehicles.updated_at',
+                'vehicles.is_system_owned' // <-- Added to fix ONLY_FULL_GROUP_BY error
+            )
             ->orderByRaw('SUM(payments.amount) DESC')
             ->with(['owner'])
             ->limit(10)
@@ -333,5 +346,57 @@ class AdminController extends Controller
                     ->limit(12)
                     ->get();
         }
+    }
+    
+    /**
+     * Add a system-owned car (permanent car) to the platform
+     */
+    public function addSystemCar(Request $request)
+    {
+        $this->checkAdminAccess();
+        $validated = $request->validate([
+            'make' => 'required|string|max:50',
+            'model' => 'required|string|max:50',
+            'year' => 'nullable|integer|min:1980|max:' . (date('Y')+1),
+            'location' => 'required|string|max:100',
+            'price_per_day' => 'required|numeric|min:0',
+            'image_url' => 'nullable|string',
+            'image_file' => 'nullable|image|max:2048',
+        ]);
+
+        // Handle image upload if provided
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('vehicles', 'public');
+            $validated['image_url'] = '/storage/' . $path;
+        }
+
+        // Assign a special system owner (e.g., admin user with id=1 or null)
+        $adminUser = \App\Models\User::whereHas('role', function($q){ $q->where('name', 'admin'); })->first();
+        $ownerId = $adminUser ? $adminUser->id : 1;
+
+        \App\Models\Vehicle::create([
+            'owner_id' => $ownerId,
+            'make' => $validated['make'],
+            'model' => $validated['model'],
+            'year' => $validated['year'],
+            'location' => $validated['location'],
+            'price_per_day' => $validated['price_per_day'],
+            'availability' => true,
+            'image_url' => $validated['image_url'] ?? null,
+            'is_system_owned' => true,
+        ]);
+
+        return redirect()->route('admin.car-management')->with('success', 'System-owned car added successfully!');
+    }
+
+    /**
+     * Show the form for editing the specified owner (admin only).
+     */
+    public function editOwner($ownerId)
+    {
+        $owner = \App\Models\User::where('id', $ownerId)->whereHas('role', function($q) {
+            $q->where('name', 'owner');
+        })->firstOrFail();
+        return view('admin.edit-owner', compact('owner'));
     }
 }

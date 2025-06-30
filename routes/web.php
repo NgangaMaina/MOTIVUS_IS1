@@ -57,6 +57,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/user-management', [App\Http\Controllers\AdminController::class, 'userManagement'])->name('user-management');
     Route::get('/financial-analytics', [App\Http\Controllers\AdminController::class, 'financialAnalytics'])->name('financial-analytics');
     Route::get('/system-activity', [App\Http\Controllers\AdminController::class, 'systemActivity'])->name('system-activity');
+    Route::post('/add-system-car', [App\Http\Controllers\AdminController::class, 'addSystemCar'])->name('add-system-car');
+
+    // Admin: Edit Owner Profile
+    Route::get('/owners/{owner}/edit', [App\Http\Controllers\AdminController::class, 'editOwner'])->name('owner-edit');
 });
 
 // Email verification route
@@ -98,6 +102,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/bookings/{booking}/complete', [BookingController::class, 'complete'])->name('bookings.complete');
         Route::get('/bookings/{booking}/assign-driver', [BookingController::class, 'assignDriverForm'])->name('bookings.assignDriverForm');
         Route::post('/bookings/{booking}/assign-driver', [BookingController::class, 'assignDriver'])->name('bookings.assignDriver');
+
+        // Profile update (owner)
+        Route::put('/profile/update', [App\Http\Controllers\OwnerDashboardController::class, 'updateProfile'])->name('profile.update');
     });
 
     // User dashboard route (renter)
