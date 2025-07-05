@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -28,13 +29,13 @@ class PaymentController extends Controller
         if ($booking->renter_id !== Auth::id()) {
             return redirect()->back()->with('error', 'Unauthorized access to booking');
         }
-
+        
         // Check if booking is already paid
         if ($booking->payment && $booking->payment->status === 'success') {
             return redirect()->route('bookings.show', $booking)
                 ->with('info', 'This booking has already been paid for.');
         }
-
+        
         return view('payments.form', compact('booking'));
     }
 
@@ -64,37 +65,40 @@ class PaymentController extends Controller
             $payment = Payment::create([
                 'booking_id' => $booking->id,
                 'transaction_code' => 'PENDING-' . uniqid(), // Temporary code until we get the real one
-                'amount' => (float)$booking->total_amount, // Ensure amount is cast to float
+                'amount' => $booking->total_amount,
                 'status' => 'pending',
             ]);
         }
 
-        // Initiate M-PESA STK push (real or fake)
-        $result = $this->mpesaService->initiateSTKPush($payment, $validated['phone_number']);
-
-        if ($result['success']) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Payment initiated. Please check your phone to complete the transaction.',
-                    'transaction_code' => $payment->transaction_code,
-                    'is_fake' => config('services.mpesa.use_fake_payments', false)
-                ]);
-            }
+        // Generate a fake transaction code (MP + 8 random uppercase characters)
+        $transactionCode = 'MP' . strtoupper(Str::random(8));
+        
+        // Update payment with the transaction code
+        $payment->update([
+            'transaction_code' => $transactionCode
+        ]);
+        
+        // Schedule a job to mark payment as successful after a delay (3 seconds)
+        dispatch(function () use ($payment, $booking) {
+            $payment->update([
+                'status' => 'success',
+                'paid_at' => now(),
+            ]);
             
-            return redirect()->route('bookings.show', $booking)
-                ->with('success', 'Payment initiated. Please check your phone to complete the transaction.');
-        }
+            // Update booking status
+            $booking->update(['status' => 'accepted']);
+        })->delay(now()->addSeconds(3));
+        
+        // Redirect to a payment processing page
+        return redirect()->route('payments.processing', $booking);
+    }
 
-        if ($request->expectsJson()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Payment initiation failed: ' . ($result['message'] ?? 'Unknown error')
-            ], 400);
-        }
-
-        return redirect()->back()
-            ->with('error', 'Payment initiation failed: ' . ($result['message'] ?? 'Unknown error'));
+    /**
+     * Show payment processing page
+     */
+    public function showProcessing(Booking $booking)
+    {
+        return view('payments.processing', compact('booking'));
     }
 
     /**
@@ -205,5 +209,9 @@ class PaymentController extends Controller
         ]);
     }
 }
+
+
+
+
 
 

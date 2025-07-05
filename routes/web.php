@@ -129,14 +129,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/bookings/{booking}/payment', [PaymentController::class, 'showPaymentForm'])->name('payments.form');
     Route::post('/bookings/{booking}/pay', [PaymentController::class, 'initiatePayment'])->name('payments.initiate');
-    Route::get('/bookings/{booking}/payment-status', [PaymentController::class, 'checkStatus'])->name('payments.status');
-    
-    // Fake payment simulation route (only available in non-production)
-    if (app()->environment('local', 'development', 'testing')) {
-        Route::post('/bookings/{booking}/simulate-payment', [PaymentController::class, 'simulateSuccess'])->name('payments.simulate');
-    }
+    Route::get('/bookings/{booking}/payment/processing', [PaymentController::class, 'showProcessing'])->name('payments.processing');
+    Route::get('/bookings/{booking}/payment/status', [PaymentController::class, 'checkStatus'])->name('payments.status');
 });
 
 require __DIR__.'/auth.php';
+
+
 
 

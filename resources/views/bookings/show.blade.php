@@ -439,6 +439,12 @@
                     </div>
 
                     @if($booking->status === 'pending' && (!$booking->payment || $booking->payment->status !== 'success'))
+                        <a href="{{ route('payments.form', $booking) }}" class="btn btn-primary">
+                            Pay Now
+                        </a>
+                    @endif
+
+                    @if($booking->status === 'pending' && (!$booking->payment || $booking->payment->status !== 'success'))
                         <div class="payment-section">
                             <h3>Complete Payment</h3>
                             <p>Total Amount: KSh {{ number_format($booking->total_amount, 2) }}</p>
@@ -495,4 +501,5 @@
     </div>
 </body>
 </html>
+
 
